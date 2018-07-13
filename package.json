@@ -1,0 +1,23 @@
+{
+  "name": "comparer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "imgcmp_f.js",
+  "dependencies": {
+    "filehound": "^1.16.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AshishKadyan/comparer.git"
+  },
+  "author": "ashish",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AshishKadyan/comparer/issues"
+  },
+  "homepage": "https://github.com/AshishKadyan/comparer#readme"
+}
