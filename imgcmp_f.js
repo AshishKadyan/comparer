@@ -25,20 +25,15 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
         });
     });
 });
-
 function comparer(path1, path2) {
     var encodedImage1 = ""
     var encodedImage2 = ""
     var return_binary = function (path) {
         return new Promise(function (resolve, reject) {
-            /*stuff using username, password*/
             fs.readFile(path, function (err, data) {
                 if (err) throw err;
-                // Encode to base64
                 encoded = new Buffer(data, 'binary').toString('base64');
-                resolve(encoded);
-                // Decode from base64
-
+                resolve(encoded);        
             });
         });
     }
