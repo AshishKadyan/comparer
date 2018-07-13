@@ -39,6 +39,7 @@ function comparer(path1, path2) {
     }
     Promise.all([return_binary(path1), return_binary(path2)]).then(function (values) {
         if (values[0] == values[1]) {
+            console.log("Duplicate reource " + counter + "=> ")
             console.log('\x1b[36m%s\x1b[0m', path1);
             console.log('\x1b[33m%s\x1b[0m', path2);
             counter++;
