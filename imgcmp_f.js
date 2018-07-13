@@ -1,9 +1,11 @@
 var fs = require("fs");
 var filehound = require("filehound")
+var config=require('./config')
 var array1 = [];
 var array2 = [];
-path1 = "./image1";
-path2 = "./image2";
+console.log(config.paths.path1)
+path1 = config.paths.path1;
+path2 = config.paths.path2;
 var counter = 1
 
 var img_pathfinder = function (path) {
