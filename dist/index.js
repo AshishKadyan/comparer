@@ -3,6 +3,7 @@ var filehound = require('filehound');
 var config = require('../config');
 var array1 = [];
 var array2 = [];
+var map = {};
 var path1 = config.paths.path1;
 var path2 = config.paths.path2;
 var counter = 1;
@@ -11,7 +12,7 @@ function img_pathfinder(path) {
         /*stuff using username, password*/
         var files = filehound.create()
             .paths(path)
-            .ext('gif', 'png')
+            .ext('gif', 'png', 'htm', 'xml', 'jpg', 'jpeg', 'bmp', 'svg', 'cur', 'ico', ',mp3', 'mp4', 'ogg', 'wmv', 'wav', 'pdf', 'xlsr', 'accdb', 'db', 'dotx', 'docx', 'xsl', 'xlsx', 'wmf', 'txt', 'js', 'html', 'json', 'xml')
             .find();
         resolve(files);
     });
@@ -44,12 +45,19 @@ function comparer(path1, path2) {
                 if (err)
                     throw err;
                 var encoded = new Buffer(data, 'binary').toString('base64');
+                //  console.log(encoded)
                 resolve(encoded);
             });
         });
     };
     Promise.all([return_binary(path1), return_binary(path2)]).then(function (values) {
         if (values[0] == values[1]) {
+            // console.log(values[0])
+            if (map[path1] == undefined) {
+                map[path1] = '';
+            }
+            map[path1] += path2 + "<>";
+            console.log(map);
             console.log("Duplicate reource " + counter + "=> ");
             console.log('\x1b[36m%s\x1b[0m', "  " + path1);
             console.log('\x1b[33m%s\x1b[0m', "  " + path2);
