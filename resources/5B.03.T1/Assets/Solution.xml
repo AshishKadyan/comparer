@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<props>
+  <name>Picture</name>
+  <id>10</id>
+  <szandpos>
+    <x>2.17</x>
+    <y>0.75</y>
+    <wd>9</wd>
+    <ht>6.42</ht>
+  </szandpos>
+  <outline>
+    <style />
+    <clr />
+  </outline>
+</props>

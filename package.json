@@ -2,13 +2,25 @@
   "name": "comparer",
   "version": "1.0.0",
   "description": "",
-  "main": "imgcmp_f.js",
+  "main": "dist/index.js",
   "dependencies": {
-    "filehound": "^1.16.4"
+    "filehound": "^1.16.4",
+    "install": "^0.12.1",
+    "mime-types": "^2.1.18",
+    "npm": "^6.2.0",
+    "yargs": "^12.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.5.2",
+    "@types/mime-types": "^2.1.0",
+    "@types/yargs": "^11.1.0",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^5.0.0-alpha.3",
+    "typescript": "^2.9.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./dist/index.js"
   },
   "repository": {
     "type": "git",

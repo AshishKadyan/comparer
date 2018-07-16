@@ -1,7 +1,7 @@
 
   module.exports = {
     paths:{
-        path1:"./image1",
-        path2:"./image2"
+        path1:"./resources/image1",
+        path2:"./resources/image2"
     }
   };
