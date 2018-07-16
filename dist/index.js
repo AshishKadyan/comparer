@@ -11,7 +11,7 @@ function img_pathfinder(path) {
         /*stuff using username, password*/
         var files = filehound.create()
             .paths(path)
-            .ext('gif', 'png')
+            .ext('gif', 'png', 'mp3')
             .find();
         resolve(files);
     });
@@ -44,12 +44,14 @@ function comparer(path1, path2) {
                 if (err)
                     throw err;
                 var encoded = new Buffer(data, 'binary').toString('base64');
+                console.log(encoded);
                 resolve(encoded);
             });
         });
     };
     Promise.all([return_binary(path1), return_binary(path2)]).then(function (values) {
         if (values[0] == values[1]) {
+            console.log(values);
             console.log("Duplicate reource " + counter + "=> ");
             console.log('\x1b[36m%s\x1b[0m', "  " + path1);
             console.log('\x1b[33m%s\x1b[0m', "  " + path2);
