@@ -13,7 +13,7 @@ function img_pathfinder(path: string): Promise<string[]> {
         /*stuff using username, password*/
         const files = filehound.create()
             .paths(path)
-            .ext('gif', 'png','mp3')
+            .ext('gif', 'png', 'htm', 'xml', 'jpg', 'jpeg', 'bmp', 'svg', 'cur', 'ico', ',mp3', 'mp4', 'ogg', 'wmv', 'wav', 'pdf', 'xlsr', 'accdb', 'db', 'dotx', 'docx', 'xsl', 'xlsx', 'wmf', 'txt', 'js', 'html', 'json', 'xml')
             .find();
         resolve(files)
     });
