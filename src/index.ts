@@ -7,6 +7,7 @@ var map = {};
 const path1 = config.paths.path1;
 const path2 = config.paths.path2;
 var counter = 1
+var check_map={};
 
 function img_pathfinder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
@@ -43,7 +44,7 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
     });
 
 }).then(function () {
-    console.log(map)
+     console.log(map)
 })
 
 function comparer(path1, path2): void {
@@ -64,12 +65,12 @@ function comparer(path1, path2): void {
         // console.log(values[0])
         if (map[path1] == undefined) {
             map[path1] = []
+            
         }
         map[path1].push(path2);
-        // console.log(map)
-        // console.log("Duplicate reource " + counter + "=> ")
-        // console.log('\x1b[36m%s\x1b[0m', "  " + path1);
-        // console.log('\x1b[33m%s\x1b[0m', "  " + path2);
+        console.log("Duplicate reource " + counter + "=> ")
+        console.log('\x1b[36m%s\x1b[0m', "  " + path1);
+        console.log('\x1b[33m%s\x1b[0m', "  " + path2);
         counter++;
     }
 

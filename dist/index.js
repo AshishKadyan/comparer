@@ -7,6 +7,7 @@ var map = {};
 var path1 = config.paths.path1;
 var path2 = config.paths.path2;
 var counter = 1;
+var check_map = {};
 function img_pathfinder(path) {
     return new Promise(function (resolve, reject) {
         /*stuff using username, password*/
@@ -56,10 +57,9 @@ function comparer(path1, path2) {
             map[path1] = [];
         }
         map[path1].push(path2);
-        // console.log(map)
-        // console.log("Duplicate reource " + counter + "=> ")
-        // console.log('\x1b[36m%s\x1b[0m', "  " + path1);
-        // console.log('\x1b[33m%s\x1b[0m', "  " + path2);
+        console.log("Duplicate reource " + counter + "=> ");
+        console.log('\x1b[36m%s\x1b[0m', "  " + path1);
+        console.log('\x1b[33m%s\x1b[0m', "  " + path2);
         counter++;
     }
 }
