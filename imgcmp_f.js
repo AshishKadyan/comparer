@@ -1,6 +1,6 @@
 var fs = require("fs");
 var filehound = require("filehound")
-var config=require('./config')
+var config = require('./config')
 var array1 = [];
 var array2 = [];
 
@@ -19,12 +19,31 @@ var img_pathfinder = function (path) {
     });
 }
 Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
-    values[0].forEach(element => {
+    values[1].forEach((element, outer_index) => {
+        values[1].forEach((element2, inner_index) => {
+            if (inner_index > outer_index) {
+
+                comparer(element, element2) // compare files in folder asset1
+            }
+
+        })
+    });
+    values[0].forEach((element, outer_index) => {
+        values[0].forEach((element2, inner_index) => {
+            if (inner_index > outer_index) {
+
+                comparer(element, element2) //compare files in folder asset2
+            }
+
+        })
         values[1].forEach(element2 => {
-            comparer(element, element2)
+            comparer(element, element2) // compare files of folder asset1 and asset2
         });
     });
+
+
 });
+
 function comparer(path1, path2) {
     var encodedImage1 = ""
     var encodedImage2 = ""
@@ -33,15 +52,15 @@ function comparer(path1, path2) {
             fs.readFile(path, function (err, data) {
                 if (err) throw err;
                 encoded = new Buffer(data, 'binary').toString('base64');
-                resolve(encoded);        
+                resolve(encoded);
             });
         });
     }
     Promise.all([return_binary(path1), return_binary(path2)]).then(function (values) {
         if (values[0] == values[1]) {
             console.log("Duplicate reource " + counter + "=> ")
-            console.log('\x1b[36m%s\x1b[0m',"  " +path1);
-            console.log('\x1b[33m%s\x1b[0m',"  " +path2);
+            console.log('\x1b[36m%s\x1b[0m', "  " + path1);
+            console.log('\x1b[33m%s\x1b[0m', "  " + path2);
             counter++;
         }
     })
