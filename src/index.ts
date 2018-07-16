@@ -39,7 +39,7 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
         })
         values[1].forEach(element2 => {
             comparer(element, element2) // compare files of folder asset1 and asset2
-        });
+        }); sc
     });
 
 })
