@@ -20,11 +20,29 @@ function img_pathfinder(path: string): Promise<string[]> {
 }
 
 Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
-    values[0].forEach(element => {
+    values[1].forEach((element, outer_index) => {
+        values[1].forEach((element2, inner_index) => {
+            if (inner_index > outer_index) {
+
+                comparer(element, element2) // compare files in folder asset1
+            }
+
+        })
+    });
+    values[0].forEach((element, outer_index) => {
+        values[0].forEach((element2, inner_index) => {
+            if (inner_index > outer_index) {
+
+                comparer(element, element2) //compare files in folder asset2
+            }
+
+        })
         values[1].forEach(element2 => {
-            comparer(element, element2)
+            comparer(element, element2) // compare files of folder asset1 and asset2
         });
     });
+
+
 });
 
 function comparer(path1, path2): void {
