@@ -34,35 +34,32 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(function (value
         values[1].forEach(function (element2) {
             comparer(element, element2); // compare files of folder asset1 and asset2
         });
-        sc;
     });
+}).then(function () {
+    console.log(map);
 });
 function comparer(path1, path2) {
     var encodedImage1 = "";
     var encodedImage2 = "";
     var return_binary = function (path) {
-        return new Promise(function (resolve, reject) {
-            fs.readFile(path, function (err, data) {
-                if (err)
-                    throw err;
-                var encoded = new Buffer(data, 'binary').toString('base64');
-                //  console.log(encoded)
-                resolve(encoded);
-            });
-        });
+        var data = fs.readFileSync(path);
+        var encoded = new Buffer(data, 'binary').toString('base64');
+        //  console.log(encoded)
+        return encoded;
     };
-    Promise.all([return_binary(path1), return_binary(path2)]).then(function (values) {
-        if (values[0] == values[1]) {
-            // console.log(values[0])
-            if (map[path1] == undefined) {
-                map[path1] = [];
-            }
-            map[path1].push(path2);
-            console.log(map);
-            console.log("Duplicate reource " + counter + "=> ");
-            console.log('\x1b[36m%s\x1b[0m', "  " + path1);
-            console.log('\x1b[33m%s\x1b[0m', "  " + path2);
-            counter++;
+    var values = [];
+    values[0] = return_binary(path1);
+    values[1] = return_binary(path2);
+    if (values[0] == values[1]) {
+        // console.log(values[0])
+        if (map[path1] == undefined) {
+            map[path1] = [];
         }
-    });
+        map[path1].push(path2);
+        // console.log(map)
+        // console.log("Duplicate reource " + counter + "=> ")
+        // console.log('\x1b[36m%s\x1b[0m', "  " + path1);
+        // console.log('\x1b[33m%s\x1b[0m', "  " + path2);
+        counter++;
+    }
 }
