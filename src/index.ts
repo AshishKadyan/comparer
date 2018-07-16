@@ -61,9 +61,9 @@ function comparer(path1, path2): void {
         if (values[0] == values[1]) {
             // console.log(values[0])
             if (map[path1] == undefined) {
-                map[path1] = ''
+                map[path1] = []
             }
-            map[path1] += path2 + "<>";
+            map[path1].push(path2);
             console.log(map)
             console.log("Duplicate reource " + counter + "=> ")
             console.log('\x1b[36m%s\x1b[0m', "  " + path1);
