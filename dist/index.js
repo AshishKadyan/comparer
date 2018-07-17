@@ -4,10 +4,11 @@ var fs = require('fs');
 var filehound = require('filehound');
 var config = require('../config');
 var path = require('path');
-var map = {};
+var map_result = {};
 var path1 = config.paths.path1;
 var path2 = config.paths.path2;
 var counter = 1;
+var result = [];
 var check_map = {};
 function pathFinder(path) {
     return new Promise(function (resolve, reject) {
@@ -40,10 +41,19 @@ Promise.all([pathFinder(path1), pathFinder(path2)]).then(function (values) {
             }
         });
     });
-}).then(function () {
-    console.log(map);
-    // console.log(check_map)
-});
+}).then(prepare_result);
+function prepare_result() {
+    var counter = 0;
+    for (var key in map_result) {
+        result.push([]);
+        result[counter].push(key);
+        map_result[key].forEach(function (element) {
+            result[counter].push(element);
+        });
+        counter++;
+    }
+    console.log(result);
+}
 function comparer(path1, path2) {
     var encodedImage1 = "";
     var encodedImage2 = "";
@@ -61,10 +71,10 @@ function comparer(path1, path2) {
         var path2_binary = return_binary(path2);
         if (path1_binary == path2_binary) {
             check_map[path2] = true;
-            if (map[path1] == undefined) {
-                map[path1] = [];
+            if (map_result[path1] == undefined) {
+                map_result[path1] = [];
             }
-            map[path1].push(path2);
+            map_result[path1].push(path2);
             counter++;
         }
     }
