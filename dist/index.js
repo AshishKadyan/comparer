@@ -66,7 +66,7 @@ function comparer(path1, path2) {
         return (path.extname(path1) == path.extname(path2));
     };
     if (ext_check(path1, path2)) {
-        console.log("comparing files " + path1 + " & " + path2);
+        //   console.log("comparing files " + path1 + " & " + path2)
         var path1_binary = return_binary(path1);
         var path2_binary = return_binary(path2);
         if (path1_binary == path2_binary) {
