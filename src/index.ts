@@ -1,5 +1,5 @@
 import { extname } from "path";
-
+const createCSVFile = require('csv-file-creator');
 const fs = require('fs');
 const filehound = require('filehound');
 var config = require('../config');
@@ -60,6 +60,8 @@ function prepare_result(){
         counter++;
     }
     console.log(result)
+    createCSVFile('result.csv',result);
+
 }
 function comparer(path1, path2): void {
     var encodedImage1 = ""

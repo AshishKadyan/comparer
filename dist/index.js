@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var createCSVFile = require('csv-file-creator');
 var fs = require('fs');
 var filehound = require('filehound');
 var config = require('../config');
@@ -53,6 +54,7 @@ function prepare_result() {
         counter++;
     }
     console.log(result);
+    createCSVFile('result.csv', result);
 }
 function comparer(path1, path2) {
     var encodedImage1 = "";
