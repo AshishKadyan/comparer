@@ -51,7 +51,7 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
     });
 }).then(function () {
     console.log(map)
-    console.log(check_map)
+   // console.log(check_map)
 })
 
 function comparer(path1, path2): void {

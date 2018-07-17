@@ -45,7 +45,7 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(function (value
     });
 }).then(function () {
     console.log(map);
-    console.log(check_map);
+    // console.log(check_map)
 });
 function comparer(path1, path2) {
     var encodedImage1 = "";
