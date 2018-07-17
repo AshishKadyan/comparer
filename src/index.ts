@@ -11,7 +11,7 @@ var paths1 = []
 var paths2 = []
 var check_map = {};
 
-function img_pathfinder(path: string): Promise<string[]> {
+function pathFinder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         /*stuff using username, password*/
         const files = filehound.create()
@@ -22,7 +22,7 @@ function img_pathfinder(path: string): Promise<string[]> {
     });
 }
 
-Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(values => {
+Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
 
     values[0].forEach((element, outer_index) => {
         values[0].forEach((element2, inner_index) => {

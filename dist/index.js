@@ -10,7 +10,7 @@ var counter = 1;
 var paths1 = [];
 var paths2 = [];
 var check_map = {};
-function img_pathfinder(path) {
+function pathFinder(path) {
     return new Promise(function (resolve, reject) {
         /*stuff using username, password*/
         var files = filehound.create()
@@ -20,7 +20,7 @@ function img_pathfinder(path) {
         resolve(files);
     });
 }
-Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(function (values) {
+Promise.all([pathFinder(path1), pathFinder(path2)]).then(function (values) {
     values[0].forEach(function (element, outer_index) {
         values[0].forEach(function (element2, inner_index) {
             if (inner_index > outer_index) {
