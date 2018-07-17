@@ -1,18 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require('fs');
 var filehound = require('filehound');
 var config = require('../config');
-var array1 = [];
-var array2 = [];
+var path = require('path');
 var map = {};
 var path1 = config.paths.path1;
 var path2 = config.paths.path2;
 var counter = 1;
-var paths1 = [];
-var paths2 = [];
 var check_map = {};
 function pathFinder(path) {
     return new Promise(function (resolve, reject) {
-        /*stuff using username, password*/
         var files = filehound.create()
             .paths(path)
             .ext('gif', 'png', 'htm', 'xml', 'jpg', 'jpeg', 'bmp', 'svg', 'lnk', 'cur', 'ico', ',mp3', 'mso', 'thmx', 'mp4', 'ogg', 'wmv', 'wav', 'pdf', 'xlsr', 'accdb', 'db', 'dotx', 'docx', 'xsl', 'xlsx', 'wmf', 'txt', 'js', 'html', 'json', 'xml', 'ts', 'mp3')
@@ -53,21 +51,21 @@ function comparer(path1, path2) {
     var return_binary = function (path) {
         var data = fs.readFileSync(path);
         var encoded = new Buffer(data, 'binary').toString('base64');
-        //  console.log(encoded)
         return encoded;
     };
-    var values = [];
-    values[0] = return_binary(path1);
-    values[1] = return_binary(path2);
-    if (values[0] == values[1]) {
-        check_map[path2] = true;
-        if (map[path1] == undefined) {
-            map[path1] = [];
+    var ext_check = function (path1, path2) {
+        return (path.extname(path1) == path.extname(path2));
+    };
+    if (ext_check(path1, path2)) {
+        var path1_binary = return_binary(path1);
+        var path2_binary = return_binary(path2);
+        if (path1_binary == path2_binary) {
+            check_map[path2] = true;
+            if (map[path1] == undefined) {
+                map[path1] = [];
+            }
+            map[path1].push(path2);
+            counter++;
         }
-        map[path1].push(path2);
-        // console.log("Duplicate reource " + counter + "=> ")
-        // console.log('\x1b[36m%s\x1b[0m', "  " + path1);
-        // console.log('\x1b[33m%s\x1b[0m', "  " + path2);
-        counter++;
     }
 }
