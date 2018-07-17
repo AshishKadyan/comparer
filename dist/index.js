@@ -24,19 +24,22 @@ Promise.all([img_pathfinder(path1), img_pathfinder(path2)]).then(function (value
     values[0].forEach(function (element, outer_index) {
         values[0].forEach(function (element2, inner_index) {
             if (inner_index > outer_index) {
-                //  comparer(element, element2) //compare files in folder asset2
+                if (!check_map[element2])
+                    comparer(element, element2); //compare files in folder asset2
             }
         });
     });
     values[0].forEach(function (element, outer_index) {
         values[1].forEach(function (element2) {
-            comparer(element, element2); // compare files of folder asset1 and asset2
+            if (!check_map[element2])
+                comparer(element, element2); // compare files of folder asset1 and asset2
         });
     });
     values[1].forEach(function (element, outer_index) {
         values[1].forEach(function (element2, inner_index) {
             if (inner_index > outer_index) {
-                //  comparer(element, element2) // compare files in folder asset1
+                if (!check_map[element2])
+                    comparer(element, element2); // compare files in folder asset1
             }
         });
     });
