@@ -14,7 +14,6 @@ function pathFinder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const files = filehound.create()
             .paths(path)
-            .ext('gif', 'png', 'htm', 'xml', 'jpg', 'jpeg', 'bmp', 'svg', 'lnk', 'cur', 'ico', ',mp3', 'mso', 'thmx', 'mp4', 'ogg', 'wmv', 'wav', 'pdf', 'xlsr', 'accdb', 'db', 'dotx', 'docx', 'xsl', 'xlsx', 'wmf', 'txt', 'js', 'html', 'json', 'xml', 'ts', 'mp3')
             .find();
         resolve(files)
     });
@@ -49,6 +48,7 @@ Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
     });
 }).then(function () {
     console.log(map)
+
     // console.log(check_map)
 })
 
@@ -67,7 +67,7 @@ function comparer(path1, path2): void {
     }
 
     if (ext_check(path1, path2)) {
-
+console.log("comparing files "+path1 +" & "+path2)
         var path1_binary = return_binary(path1)
         var path2_binary = return_binary(path2)
         if (path1_binary == path2_binary) {

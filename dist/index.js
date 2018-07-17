@@ -13,7 +13,6 @@ function pathFinder(path) {
     return new Promise(function (resolve, reject) {
         var files = filehound.create()
             .paths(path)
-            .ext('gif', 'png', 'htm', 'xml', 'jpg', 'jpeg', 'bmp', 'svg', 'lnk', 'cur', 'ico', ',mp3', 'mso', 'thmx', 'mp4', 'ogg', 'wmv', 'wav', 'pdf', 'xlsr', 'accdb', 'db', 'dotx', 'docx', 'xsl', 'xlsx', 'wmf', 'txt', 'js', 'html', 'json', 'xml', 'ts', 'mp3')
             .find();
         resolve(files);
     });
@@ -57,6 +56,7 @@ function comparer(path1, path2) {
         return (path.extname(path1) == path.extname(path2));
     };
     if (ext_check(path1, path2)) {
+        console.log("comparing files " + path1 + " & " + path2);
         var path1_binary = return_binary(path1);
         var path2_binary = return_binary(path2);
         if (path1_binary == path2_binary) {
