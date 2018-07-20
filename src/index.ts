@@ -11,16 +11,20 @@ var counter = 1
 var result = []
 var check_map = {};
 
-function pathFinder(path: string): Promise<string[]> {
+function path_finder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const files = filehound.create()
-            .paths(path)
+            .paths(path).ext('accdb','ogg','thmx','mso')
             .find();
+          //  console.log(files)
+            
         resolve(files)
     });
 }
 
-Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
+Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
+    console.log(values);
+    return
 
     values[0].forEach((element, outer_index) => {
         values[0].forEach((element2, inner_index) => {
@@ -48,7 +52,7 @@ Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
         })
     });
 }).then(prepare_result)
-function prepare_result(){
+function prepare_result() {
     var counter = 0;
     for (var key in map_result) {
         result.push([])
@@ -60,7 +64,7 @@ function prepare_result(){
         counter++;
     }
     console.log(result)
-    createCSVFile('result.csv',result);
+    createCSVFile('result.csv', result);
 
 }
 function comparer(path1, path2): void {
@@ -76,9 +80,21 @@ function comparer(path1, path2): void {
     var ext_check = function (path1, path2) {
         return (path.extname(path1) == path.extname(path2))
     }
+    var size_check = function (path1, path2) {
 
-    if (ext_check(path1, path2)) {
-     //   console.log("comparing files " + path1 + " & " + path2)
+        const stats = fs.statSync(path1)
+        const fileSizeInBytes = stats.size
+        const stats1 = fs.statSync(path1)
+        const fileSizeInBytes1 = stats.size
+        // if (fileSizeInBytes == fileSizeInBytes1) {
+        //     console.log(fileSizeInBytes + "   " + fileSizeInBytes1)
+        // }
+        return (fileSizeInBytes == fileSizeInBytes1)
+
+    }
+
+    if (ext_check(path1, path2) && (size_check(path1, path2))) {
+        console.log("comparing files " + path1 + " & " + path2)
         var path1_binary = return_binary(path1)
         var path2_binary = return_binary(path2)
         if (path1_binary == path2_binary) {

@@ -11,15 +11,18 @@ var path2 = config.paths.path2;
 var counter = 1;
 var result = [];
 var check_map = {};
-function pathFinder(path) {
+function path_finder(path) {
     return new Promise(function (resolve, reject) {
         var files = filehound.create()
-            .paths(path)
+            .paths(path).ext('accdb', 'ogg', 'thmx', 'mso')
             .find();
+        //  console.log(files)
         resolve(files);
     });
 }
-Promise.all([pathFinder(path1), pathFinder(path2)]).then(function (values) {
+Promise.all([path_finder(path1), path_finder(path2)]).then(function (values) {
+    console.log(values);
+    return;
     values[0].forEach(function (element, outer_index) {
         values[0].forEach(function (element2, inner_index) {
             if (inner_index > outer_index) {
@@ -67,8 +70,18 @@ function comparer(path1, path2) {
     var ext_check = function (path1, path2) {
         return (path.extname(path1) == path.extname(path2));
     };
-    if (ext_check(path1, path2)) {
-        //   console.log("comparing files " + path1 + " & " + path2)
+    var size_check = function (path1, path2) {
+        var stats = fs.statSync(path1);
+        var fileSizeInBytes = stats.size;
+        var stats1 = fs.statSync(path1);
+        var fileSizeInBytes1 = stats.size;
+        // if (fileSizeInBytes == fileSizeInBytes1) {
+        //     console.log(fileSizeInBytes + "   " + fileSizeInBytes1)
+        // }
+        return (fileSizeInBytes == fileSizeInBytes1);
+    };
+    if (ext_check(path1, path2) && (size_check(path1, path2))) {
+        console.log("comparing files " + path1 + " & " + path2);
         var path1_binary = return_binary(path1);
         var path2_binary = return_binary(path2);
         if (path1_binary == path2_binary) {
