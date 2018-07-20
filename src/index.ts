@@ -14,17 +14,15 @@ var check_map = {};
 function path_finder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const files = filehound.create()
-            .paths(path).ext('accdb','ogg','thmx','mso')
+            .paths(path)
             .find();
-          //  console.log(files)
-            
+        //  console.log(files)
+
         resolve(files)
     });
 }
 
 Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
-    console.log(values);
-    return
 
     values[0].forEach((element, outer_index) => {
         values[0].forEach((element2, inner_index) => {
@@ -92,8 +90,17 @@ function comparer(path1, path2): void {
         return (fileSizeInBytes == fileSizeInBytes1)
 
     }
+    var size_check = function (path1, path2) {
 
-    if (ext_check(path1, path2) && (size_check(path1, path2))) {
+        const stats1 = fs.statSync(path1)
+        const fileSizeInBytes1 = stats1.size
+        const stats2 = fs.statSync(path2)
+        const fileSizeInBytes2 = stats2.size
+        return (fileSizeInBytes1 == fileSizeInBytes2)
+
+
+    }
+    if (ext_check(path1, path2) && size_check(path1, path2)) {
         console.log("comparing files " + path1 + " & " + path2)
         var path1_binary = return_binary(path1)
         var path2_binary = return_binary(path2)

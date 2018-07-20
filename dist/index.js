@@ -14,15 +14,13 @@ var check_map = {};
 function path_finder(path) {
     return new Promise(function (resolve, reject) {
         var files = filehound.create()
-            .paths(path).ext('accdb', 'ogg', 'thmx', 'mso')
+            .paths(path)
             .find();
         //  console.log(files)
         resolve(files);
     });
 }
 Promise.all([path_finder(path1), path_finder(path2)]).then(function (values) {
-    console.log(values);
-    return;
     values[0].forEach(function (element, outer_index) {
         values[0].forEach(function (element2, inner_index) {
             if (inner_index > outer_index) {
@@ -80,7 +78,14 @@ function comparer(path1, path2) {
         // }
         return (fileSizeInBytes == fileSizeInBytes1);
     };
-    if (ext_check(path1, path2) && (size_check(path1, path2))) {
+    var size_check = function (path1, path2) {
+        var stats1 = fs.statSync(path1);
+        var fileSizeInBytes1 = stats1.size;
+        var stats2 = fs.statSync(path2);
+        var fileSizeInBytes2 = stats2.size;
+        return (fileSizeInBytes1 == fileSizeInBytes2);
+    };
+    if (ext_check(path1, path2) && size_check(path1, path2)) {
         console.log("comparing files " + path1 + " & " + path2);
         var path1_binary = return_binary(path1);
         var path2_binary = return_binary(path2);
