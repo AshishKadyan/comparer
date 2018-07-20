@@ -21,35 +21,37 @@ function path_finder(path: string): Promise<string[]> {
         resolve(files)
     });
 }
+function dupli_resource() {
+    Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
 
-Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
+        values[0].forEach((element, outer_index) => {
+            values[0].forEach((element2, inner_index) => {
+                if (inner_index > outer_index) {
+                    if (!check_map[element2])
+                        comparer(element, element2) //compare files in folder asset2
+                }
 
-    values[0].forEach((element, outer_index) => {
-        values[0].forEach((element2, inner_index) => {
-            if (inner_index > outer_index) {
-                if (!check_map[element2])
-                    comparer(element, element2) //compare files in folder asset2
-            }
-
-        })
-    });
-    values[0].forEach((element, outer_index) => {
-        values[1].forEach(element2 => {
-            if (!check_map[element2])
-                comparer(element, element2) // compare files of folder asset1 and asset2
+            })
         });
-    });
-    values[1].forEach((element, outer_index) => {
-        values[1].forEach((element2, inner_index) => {
-            if (inner_index > outer_index) {
+        values[0].forEach((element, outer_index) => {
+            values[1].forEach(element2 => {
                 if (!check_map[element2])
-                    comparer(element, element2) // compare files in folder asset1
+                    comparer(element, element2) // compare files of folder asset1 and asset2
+            });
+        });
+        values[1].forEach((element, outer_index) => {
+            values[1].forEach((element2, inner_index) => {
+                if (inner_index > outer_index) {
+                    if (!check_map[element2])
+                        comparer(element, element2) // compare files in folder asset1
 
-            }
+                }
 
-        })
-    });
-}).then(prepare_result)
+            })
+        });
+    }).then(prepare_result)
+}
+
 function prepare_result() {
     var counter = 0;
     for (var key in map_result) {
@@ -66,8 +68,6 @@ function prepare_result() {
 
 }
 function comparer(path1, path2): void {
-    var encodedImage1 = ""
-    var encodedImage2 = ""
     var return_binary = function (path) {
 
         var data = fs.readFileSync(path)
@@ -79,26 +79,11 @@ function comparer(path1, path2): void {
         return (path.extname(path1) == path.extname(path2))
     }
     var size_check = function (path1, path2) {
-
         const stats = fs.statSync(path1)
         const fileSizeInBytes = stats.size
         const stats1 = fs.statSync(path1)
         const fileSizeInBytes1 = stats.size
-        // if (fileSizeInBytes == fileSizeInBytes1) {
-        //     console.log(fileSizeInBytes + "   " + fileSizeInBytes1)
-        // }
         return (fileSizeInBytes == fileSizeInBytes1)
-
-    }
-    var size_check = function (path1, path2) {
-
-        const stats1 = fs.statSync(path1)
-        const fileSizeInBytes1 = stats1.size
-        const stats2 = fs.statSync(path2)
-        const fileSizeInBytes2 = stats2.size
-        return (fileSizeInBytes1 == fileSizeInBytes2)
-
-
     }
     if (ext_check(path1, path2) && size_check(path1, path2)) {
         console.log("comparing files " + path1 + " & " + path2)
@@ -113,6 +98,5 @@ function comparer(path1, path2): void {
             counter++;
         }
     }
-
-
 }
+dupli_resource();
