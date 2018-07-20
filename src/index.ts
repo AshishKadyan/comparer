@@ -1,4 +1,7 @@
 import { extname } from "path";
+import { promises } from "fs";
+import { resolve } from "url";
+import { rejects } from "assert";
 const createCSVFile = require('csv-file-creator');
 const fs = require('fs');
 const filehound = require('filehound');
@@ -10,7 +13,6 @@ const path2 = config.paths.path2;
 var counter = 1
 var result = []
 var check_map = {};
-
 function path_finder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const files = filehound.create()
@@ -21,37 +23,39 @@ function path_finder(path: string): Promise<string[]> {
         resolve(files)
     });
 }
-function dupli_resource() {
-    Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
+function dupli_resource_mover() {
+    return new Promise((resolve, reject) => {
+        Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
 
-        values[0].forEach((element, outer_index) => {
-            values[0].forEach((element2, inner_index) => {
-                if (inner_index > outer_index) {
-                    if (!check_map[element2])
-                        comparer(element, element2) //compare files in folder asset2
-                }
+            values[0].forEach((element, outer_index) => {
+                values[0].forEach((element2, inner_index) => {
+                    if (inner_index > outer_index) {
+                        if (!check_map[element2])
+                            comparer(element, element2) //compare files in folder asset2
+                    }
 
-            })
-        });
-        values[0].forEach((element, outer_index) => {
-            values[1].forEach(element2 => {
-                if (!check_map[element2])
-                    comparer(element, element2) // compare files of folder asset1 and asset2
+                })
             });
-        });
-        values[1].forEach((element, outer_index) => {
-            values[1].forEach((element2, inner_index) => {
-                if (inner_index > outer_index) {
+            values[0].forEach((element, outer_index) => {
+                values[1].forEach(element2 => {
                     if (!check_map[element2])
-                        comparer(element, element2) // compare files in folder asset1
+                        comparer(element, element2) // compare files of folder asset1 and asset2
+                });
+            });
+            values[1].forEach((element, outer_index) => {
+                values[1].forEach((element2, inner_index) => {
+                    if (inner_index > outer_index) {
+                        if (!check_map[element2])
+                            comparer(element, element2) // compare files in folder asset1
 
-                }
+                    }
 
-            })
-        });
-    }).then(prepare_result)
+                })
+            });
+        }).then(prepare_result).then(move_resource)
+    })
+
 }
-
 function prepare_result() {
     var counter = 0;
     for (var key in map_result) {
@@ -99,4 +103,35 @@ function comparer(path1, path2): void {
         }
     }
 }
-dupli_resource();
+function copyFile(src, dest) {  
+    var files_to_copy_array=src.split("\\");
+
+    fs.access(dest, (err) => {
+        if (err)
+            fs.mkdirSync(dest);
+        copyF(src, path.join(dest, files_to_copy_array[files_to_copy_array.length-1]));
+    });
+    function copyF(src, dest) {
+        let readStream = fs.createReadStream(src);
+        readStream.once('error', (err) => {
+            console.log(err);
+        });
+        readStream.once('end', () => {
+            console.log('done copying ' + src + " to " + dest);
+        });
+        readStream.pipe(fs.createWriteStream(dest));
+    }
+}
+function move_resource() {
+    //console.log(map_result);
+    for (var key in map_result) {
+        counter = 0;
+        map_result[key].forEach(element => {
+            var src = map_result[key][counter]
+            var source = fs.createReadStream(src);
+            copyFile(src, config.paths.dest);
+            counter++;
+        });
+    }
+}
+dupli_resource_mover().then(move_resource);

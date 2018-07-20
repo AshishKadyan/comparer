@@ -20,31 +20,33 @@ function path_finder(path) {
         resolve(files);
     });
 }
-function dupli_resource() {
-    Promise.all([path_finder(path1), path_finder(path2)]).then(function (values) {
-        values[0].forEach(function (element, outer_index) {
-            values[0].forEach(function (element2, inner_index) {
-                if (inner_index > outer_index) {
+function dupli_resource_mover() {
+    return new Promise(function (resolve, reject) {
+        Promise.all([path_finder(path1), path_finder(path2)]).then(function (values) {
+            values[0].forEach(function (element, outer_index) {
+                values[0].forEach(function (element2, inner_index) {
+                    if (inner_index > outer_index) {
+                        if (!check_map[element2])
+                            comparer(element, element2); //compare files in folder asset2
+                    }
+                });
+            });
+            values[0].forEach(function (element, outer_index) {
+                values[1].forEach(function (element2) {
                     if (!check_map[element2])
-                        comparer(element, element2); //compare files in folder asset2
-                }
+                        comparer(element, element2); // compare files of folder asset1 and asset2
+                });
             });
-        });
-        values[0].forEach(function (element, outer_index) {
-            values[1].forEach(function (element2) {
-                if (!check_map[element2])
-                    comparer(element, element2); // compare files of folder asset1 and asset2
+            values[1].forEach(function (element, outer_index) {
+                values[1].forEach(function (element2, inner_index) {
+                    if (inner_index > outer_index) {
+                        if (!check_map[element2])
+                            comparer(element, element2); // compare files in folder asset1
+                    }
+                });
             });
-        });
-        values[1].forEach(function (element, outer_index) {
-            values[1].forEach(function (element2, inner_index) {
-                if (inner_index > outer_index) {
-                    if (!check_map[element2])
-                        comparer(element, element2); // compare files in folder asset1
-                }
-            });
-        });
-    }).then(prepare_result);
+        }).then(prepare_result).then(move_resource);
+    });
 }
 function prepare_result() {
     var counter = 0;
@@ -89,4 +91,34 @@ function comparer(path1, path2) {
         }
     }
 }
-dupli_resource();
+function copyFile(src, dest) {
+    var files_to_copy_array = src.split("\\");
+    fs.access(dest, function (err) {
+        if (err)
+            fs.mkdirSync(dest);
+        copyF(src, path.join(dest, files_to_copy_array[files_to_copy_array.length - 1]));
+    });
+    function copyF(src, dest) {
+        var readStream = fs.createReadStream(src);
+        readStream.once('error', function (err) {
+            console.log(err);
+        });
+        readStream.once('end', function () {
+            console.log('done copying ' + src + " to " + dest);
+        });
+        readStream.pipe(fs.createWriteStream(dest));
+    }
+}
+function move_resource() {
+    //console.log(map_result);
+    for (var key in map_result) {
+        counter = 0;
+        map_result[key].forEach(function (element) {
+            var src = map_result[key][counter];
+            var source = fs.createReadStream(src);
+            copyFile(src, config.paths.dest);
+            counter++;
+        });
+    }
+}
+dupli_resource_mover().then(move_resource);
