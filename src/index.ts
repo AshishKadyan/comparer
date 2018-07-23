@@ -83,7 +83,7 @@ function prepareResult() {
         });
         counter++;
     }
-    console.log(result)
+
     createCSVFile('result.csv', result);
 
 }
@@ -119,7 +119,7 @@ function moveFile(src: string, dest: string) {
 
     var files_to_copy_array = src.split("\\");
     var filename = files_to_copy_array[files_to_copy_array.length - 1]
-    fsMover.move(src, dest + "/" + filename, console.error);
+    fsMover.move(src, dest + "/" + filename);
 }
 function moveResource(type: string) {
     //console.log(map_result);
@@ -129,7 +129,7 @@ function moveResource(type: string) {
         });
     }
     if (type == "duplicate") {
-        var dest2 = config.paths.dest + "/duplicates"
+        var dest2 = config.paths.dest + "/trash"
         for (var key in map_result) {
             resourseToMove(map_result[key], dest2);
         }

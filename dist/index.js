@@ -22,20 +22,15 @@ function pathFinder(path) {
     });
 }
 function constructTask() {
-    function purifier(array) {
-        var purifiedArray = array.filter(function (path) {
-            var paths_array = path.split("\\");
-            return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json");
-        });
-        return purifiedArray;
-    }
+    // function purifier(array) {
+    //     var purifiedArray = array.filter(function (path) {
+    //         var paths_array = path.split("\\")
+    //         return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
+    //     })
+    //     return purifiedArray
+    // }
     return new Promise(function (resolve, reject) {
         Promise.all([pathFinder(path1), pathFinder(path2)]).then(function (values) {
-            console.log(values);
-            var array_path1 = purifier(values[0]);
-            var array_path2 = purifier(values[1]);
-            console.log(array_path1);
-            console.log(array_path2);
             values[0].forEach(function (element, outer_index) {
                 values[0].forEach(function (element2, inner_index) {
                     if (inner_index > outer_index) {
@@ -79,7 +74,6 @@ function prepareResult() {
         });
         counter++;
     }
-    console.log(result);
     createCSVFile('result.csv', result);
 }
 function compareExtensionType(path1, path2, ext) {
@@ -113,23 +107,7 @@ function comparer(path1, path2) {
 function moveFile(src, dest) {
     var files_to_copy_array = src.split("\\");
     var filename = files_to_copy_array[files_to_copy_array.length - 1];
-    console.log(dest + "/" + filename);
-    fsMover.move(src, dest + "/" + filename, console.error);
-    // fs.access(dest, (err) => {
-    //     if (err)
-    //         fs.mkdirSync(dest);
-    //     copyF(src, path.join(dest, filename));
-    // });
-    // function copyF(src, dest) {
-    //     let readStream = fs.createReadStream(src);
-    //     readStream.once('error', (err) => {
-    //         console.log(err);
-    //     });
-    //     readStream.once('end', () => {
-    //         console.log('Done copying ' + src + " to " + dest);
-    //     });
-    //     readStream.pipe(fs.createWriteStream(dest));
-    // }
+    fsMover.move(src, dest + "/" + filename);
 }
 function moveResource(type) {
     //console.log(map_result);
@@ -139,7 +117,7 @@ function moveResource(type) {
         });
     }
     if (type == "duplicate") {
-        var dest2 = config.paths.dest + "/duplicates";
+        var dest2 = config.paths.dest + "/trash";
         for (var key in map_result) {
             resourseToMove(map_result[key], dest2);
         }
