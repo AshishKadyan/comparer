@@ -13,7 +13,7 @@ const path2 = config.paths.path2;
 var counter = 1
 var result = []
 var check_map = {};
-function path_finder(path: string): Promise<string[]> {
+function pathFinder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const files = filehound.create()
             .paths(path)
@@ -23,9 +23,9 @@ function path_finder(path: string): Promise<string[]> {
         resolve(files)
     });
 }
-function dupli_resource_mover() {
+function dupliResourceMover() {
     return new Promise((resolve, reject) => {
-        Promise.all([path_finder(path1), path_finder(path2)]).then(values => {
+        Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
 
             values[0].forEach((element, outer_index) => {
                 values[0].forEach((element2, inner_index) => {
@@ -52,11 +52,11 @@ function dupli_resource_mover() {
 
                 })
             });
-        }).then(prepare_result).then(move_resource)
+        }).then(prepareResult).then(moveResource)
     })
 
 }
-function prepare_result() {
+function prepareResult() {
     var counter = 0;
     for (var key in map_result) {
         result.push([])
@@ -71,45 +71,42 @@ function prepare_result() {
     createCSVFile('result.csv', result);
 
 }
-function comparer(path1, path2): void {
-    var return_binary = function (path) {
-
-        var data = fs.readFileSync(path)
-        const encoded = new Buffer(data, 'binary').toString('base64');
-        return encoded
-
-    }
+function compareExtensionType(path1: string, path2: string, ext: string) {
+    console.log(ext)
+    console.log("comparing files " + path1 + " & " + path2 + "on binary")
+    var data1 = fs.readFileSync(path1)
+    const encoded1 = new Buffer(data1, 'binary').toString('base64');
+    var data2 = fs.readFileSync(path2)
+    const encoded2 = new Buffer(data2, 'binary').toString('base64');
+    return (encoded1 == encoded2)
+}
+function comparer(path1: string, path2: string): void {
     var ext_check = function (path1, path2) {
         return (path.extname(path1) == path.extname(path2))
     }
     var size_check = function (path1, path2) {
         const stats = fs.statSync(path1)
         const fileSizeInBytes = stats.size
-        const stats1 = fs.statSync(path1)
-        const fileSizeInBytes1 = stats.size
+        const stats1 = fs.statSync(path2)
+        const fileSizeInBytes1 = stats1.size
         return (fileSizeInBytes == fileSizeInBytes1)
     }
-    if (ext_check(path1, path2) && size_check(path1, path2)) {
-        console.log("comparing files " + path1 + " & " + path2)
-        var path1_binary = return_binary(path1)
-        var path2_binary = return_binary(path2)
-        if (path1_binary == path2_binary) {
-            check_map[path2] = true
-            if (map_result[path1] == undefined) {
-                map_result[path1] = []
-            }
-            map_result[path1].push(path2);
-            counter++;
+    if (ext_check(path1, path2) && size_check(path1, path2) && compareExtensionType(path1, path2, path.extname(path1))) {
+        check_map[path2] = true
+        if (map_result[path1] == undefined) {
+            map_result[path1] = []
         }
+        map_result[path1].push(path2);
+        counter++;
     }
 }
-function copyFile(src, dest) {  
-    var files_to_copy_array=src.split("\\");
-
+function copyFile(src, dest) {
+    var files_to_copy_array = src.split("\\");
+    var filename = files_to_copy_array[files_to_copy_array.length - 1]
     fs.access(dest, (err) => {
         if (err)
             fs.mkdirSync(dest);
-        copyF(src, path.join(dest, files_to_copy_array[files_to_copy_array.length-1]));
+        copyF(src, path.join(dest, filename));
     });
     function copyF(src, dest) {
         let readStream = fs.createReadStream(src);
@@ -122,16 +119,13 @@ function copyFile(src, dest) {
         readStream.pipe(fs.createWriteStream(dest));
     }
 }
-function move_resource() {
+function moveResource() {
     //console.log(map_result);
     for (var key in map_result) {
-        counter = 0;
+      //  copyFile(key, config.paths.dest);
         map_result[key].forEach(element => {
-            var src = map_result[key][counter]
-            var source = fs.createReadStream(src);
-            copyFile(src, config.paths.dest);
-            counter++;
+            copyFile(element, config.paths.dest);
         });
     }
 }
-dupli_resource_mover().then(move_resource);
+dupliResourceMover().then(moveResource);
