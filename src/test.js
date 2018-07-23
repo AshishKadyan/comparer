@@ -17,9 +17,7 @@ function copyMap(source, dest) {
         var updated_destination = ""
         var updated_source = ""
         files.forEach(file => {
-            console.log(file)
             file_lowercase=file.toLowerCase()
-            console.log(file_lowercase)
             if (file_lowercase.indexOf("asset") > -1) {
                 updated_source = source + ("/") + file
               //  console.log(updated_source)
@@ -41,7 +39,7 @@ function copyMap(source, dest) {
 
                             updated_destination = dest + "/" + file1
                         } else {
-                            updated_destination = dest + "/" + file + map_files_copied[file]
+                            updated_destination = dest + "/" + file +"_"+ map_files_copied[file]
                         }
                     }
                     copy(updated_source, updated_destination)
