@@ -2,6 +2,7 @@ import { extname } from "path";
 import { promises } from "fs";
 import { resolve } from "url";
 import { rejects } from "assert";
+var fsMover = require('fs-extra');
 const createCSVFile = require('csv-file-creator');
 const fs = require('fs');
 const filehound = require('filehound');
@@ -24,9 +25,21 @@ function pathFinder(path: string): Promise<string[]> {
     });
 }
 function constructTask() {
+    function purifier(array){
+        var purifiedArray = array.filter(function (path) {
+            var paths_array = path.split("\\")
+            return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
+        })
+        return purifiedArray
+    }
     return new Promise((resolve, reject) => {
         Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
+            console.log(values)
 
+            var array_path1 =purifier(values[0])
+            var array_path2 =purifier(values[1])
+            console.log(array_path1);
+            console.log(array_path2);
             values[0].forEach((element, outer_index) => {
                 values[0].forEach((element2, inner_index) => {
                     if (inner_index > outer_index) {

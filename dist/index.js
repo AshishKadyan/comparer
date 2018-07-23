@@ -21,8 +21,20 @@ function pathFinder(path) {
     });
 }
 function constructTask() {
+    function purifier(array) {
+        var purifiedArray = array.filter(function (path) {
+            var paths_array = path.split("\\");
+            return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json");
+        });
+        return purifiedArray;
+    }
     return new Promise(function (resolve, reject) {
         Promise.all([pathFinder(path1), pathFinder(path2)]).then(function (values) {
+            console.log(values);
+            var array_path1 = purifier(values[0]);
+            var array_path2 = purifier(values[1]);
+            console.log(array_path1);
+            console.log(array_path2);
             values[0].forEach(function (element, outer_index) {
                 values[0].forEach(function (element2, inner_index) {
                     if (inner_index > outer_index) {
