@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var fsMover = require('fs-extra');
 var createCSVFile = require('csv-file-creator');
 var fs = require('fs');
 var filehound = require('filehound');
 var config = require('../config');
 var path = require('path');
 var map_result = {};
-var path1 = config.paths.path1;
+var path1 = config.paths.dest;
 var path2 = config.paths.path2;
 var counter = 1;
 var result = [];
@@ -45,15 +46,17 @@ function constructTask() {
             });
             values[0].forEach(function (element, outer_index) {
                 values[1].forEach(function (element2) {
-                    if (!check_map[element2])
-                        comparer(element, element2); // compare files of folder asset1 and asset2
+                    if (!check_map[element2]) {
+                    }
+                    //comparer(element, element2) // compare files of folder asset1 and asset2
                 });
             });
             values[1].forEach(function (element, outer_index) {
                 values[1].forEach(function (element2, inner_index) {
                     if (inner_index > outer_index) {
-                        if (!check_map[element2])
-                            comparer(element, element2); // compare files in folder asset1
+                        if (!check_map[element2]) {
+                        }
+                        // comparer(element, element2) // compare files in folder asset1
                     }
                 });
             });
@@ -107,34 +110,33 @@ function comparer(path1, path2) {
         counter++;
     }
 }
-function copyFile(src, dest) {
+function moveFile(src, dest) {
     var files_to_copy_array = src.split("\\");
     var filename = files_to_copy_array[files_to_copy_array.length - 1];
-    fs.access(dest, function (err) {
-        if (err)
-            fs.mkdirSync(dest);
-        copyF(src, path.join(dest, filename));
-    });
-    function copyF(src, dest) {
-        var readStream = fs.createReadStream(src);
-        readStream.once('error', function (err) {
-            console.log(err);
-        });
-        readStream.once('end', function () {
-            console.log('Done copying ' + src + " to " + dest);
-        });
-        readStream.pipe(fs.createWriteStream(dest));
-    }
+    console.log(dest + "/" + filename);
+    fsMover.move(src, dest + "/" + filename, console.error);
+    // fs.access(dest, (err) => {
+    //     if (err)
+    //         fs.mkdirSync(dest);
+    //     copyF(src, path.join(dest, filename));
+    // });
+    // function copyF(src, dest) {
+    //     let readStream = fs.createReadStream(src);
+    //     readStream.once('error', (err) => {
+    //         console.log(err);
+    //     });
+    //     readStream.once('end', () => {
+    //         console.log('Done copying ' + src + " to " + dest);
+    //     });
+    //     readStream.pipe(fs.createWriteStream(dest));
+    // }
 }
 function moveResource(type) {
     //console.log(map_result);
     function resourseToMove(resourseArray, dest) {
         resourseArray.forEach(function (element) {
-            copyFile(element, dest);
+            moveFile(element, dest);
         });
-    }
-    if (type == "all") {
-        var dest1 = config.paths.dest;
     }
     if (type == "duplicate") {
         var dest2 = config.paths.dest + "/duplicates";

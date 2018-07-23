@@ -9,7 +9,7 @@ const filehound = require('filehound');
 var config = require('../config');
 var path = require('path')
 var map_result = {};
-const path1 = config.paths.path1;
+const path1 = config.paths.dest;
 const path2 = config.paths.path2;
 var counter = 1
 var result = []
@@ -25,21 +25,15 @@ function pathFinder(path: string): Promise<string[]> {
     });
 }
 function constructTask() {
-    function purifier(array){
-        var purifiedArray = array.filter(function (path) {
-            var paths_array = path.split("\\")
-            return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
-        })
-        return purifiedArray
-    }
+    // function purifier(array) {
+    //     var purifiedArray = array.filter(function (path) {
+    //         var paths_array = path.split("\\")
+    //         return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
+    //     })
+    //     return purifiedArray
+    // }
     return new Promise((resolve, reject) => {
         Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
-            console.log(values)
-
-            var array_path1 =purifier(values[0])
-            var array_path2 =purifier(values[1])
-            console.log(array_path1);
-            console.log(array_path2);
             values[0].forEach((element, outer_index) => {
                 values[0].forEach((element2, inner_index) => {
                     if (inner_index > outer_index) {
@@ -51,15 +45,19 @@ function constructTask() {
             });
             values[0].forEach((element, outer_index) => {
                 values[1].forEach(element2 => {
-                    if (!check_map[element2])
-                        comparer(element, element2) // compare files of folder asset1 and asset2
+                    if (!check_map[element2]){
+
+                    }
+                        //comparer(element, element2) // compare files of folder asset1 and asset2
                 });
             });
             values[1].forEach((element, outer_index) => {
                 values[1].forEach((element2, inner_index) => {
                     if (inner_index > outer_index) {
-                        if (!check_map[element2])
-                            comparer(element, element2) // compare files in folder asset1
+                        if (!check_map[element2]){
+
+                        }
+                           // comparer(element, element2) // compare files in folder asset1
 
                     }
 
@@ -117,37 +115,18 @@ function comparer(path1: string, path2: string): void {
         counter++;
     }
 }
-function copyFile(src: string, dest: string) {
+function moveFile(src: string, dest: string) {
+
     var files_to_copy_array = src.split("\\");
     var filename = files_to_copy_array[files_to_copy_array.length - 1]
-    fs.access(dest, (err) => {
-        if (err)
-            fs.mkdirSync(dest);
-        copyF(src, path.join(dest, filename));
-    });
-    function copyF(src, dest) {
-        let readStream = fs.createReadStream(src);
-        readStream.once('error', (err) => {
-            console.log(err);
-        });
-        readStream.once('end', () => {
-            console.log('Done copying ' + src + " to " + dest);
-        });
-        readStream.pipe(fs.createWriteStream(dest));
-    }
+    fsMover.move(src, dest + "/" + filename, console.error);
 }
 function moveResource(type: string) {
     //console.log(map_result);
     function resourseToMove(resourseArray, dest) {
         resourseArray.forEach(element => {
-            copyFile(element, dest);
+            moveFile(element, dest);
         });
-    }
-    if (type == "all") {
-        var dest1 = config.paths.dest
-
-
-
     }
     if (type == "duplicate") {
         var dest2 = config.paths.dest + "/duplicates"
