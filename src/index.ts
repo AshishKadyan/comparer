@@ -23,7 +23,7 @@ function pathFinder(path: string): Promise<string[]> {
         resolve(files)
     });
 }
-function dupliResourceMover() {
+function constructTask() {
     return new Promise((resolve, reject) => {
         Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
 
@@ -52,7 +52,13 @@ function dupliResourceMover() {
 
                 })
             });
-        }).then(prepareResult).then(moveResource)
+        }).then(function () {
+            moveResource("all")
+        }).then(function () {
+            prepareResult
+        }).then(function () {
+            moveResource("duplicate")
+        })
     })
 
 }
@@ -63,7 +69,6 @@ function prepareResult() {
         result[counter].push(key)
         map_result[key].forEach(element => {
             result[counter].push(element)
-
         });
         counter++;
     }
@@ -72,8 +77,7 @@ function prepareResult() {
 
 }
 function compareExtensionType(path1: string, path2: string, ext: string) {
-    console.log(ext)
-    console.log("comparing files " + path1 + " & " + path2 + "on binary")
+    console.log("comparing files " + path1 + " & " + path2 + " on binary")
     var data1 = fs.readFileSync(path1)
     const encoded1 = new Buffer(data1, 'binary').toString('base64');
     var data2 = fs.readFileSync(path2)
@@ -100,7 +104,7 @@ function comparer(path1: string, path2: string): void {
         counter++;
     }
 }
-function copyFile(src, dest) {
+function copyFile(src: string, dest: string) {
     var files_to_copy_array = src.split("\\");
     var filename = files_to_copy_array[files_to_copy_array.length - 1]
     fs.access(dest, (err) => {
@@ -114,18 +118,30 @@ function copyFile(src, dest) {
             console.log(err);
         });
         readStream.once('end', () => {
-            console.log('done copying ' + src + " to " + dest);
+            console.log('Done copying ' + src + " to " + dest);
         });
         readStream.pipe(fs.createWriteStream(dest));
     }
 }
-function moveResource() {
+function moveResource(type: string) {
     //console.log(map_result);
-    for (var key in map_result) {
-      //  copyFile(key, config.paths.dest);
-        map_result[key].forEach(element => {
-            copyFile(element, config.paths.dest);
+    function resourseToMove(resourseArray, dest) {
+        resourseArray.forEach(element => {
+            copyFile(element, dest);
         });
     }
+    if (type == "all") {
+        var dest1 = config.paths.dest
+
+
+
+    }
+    if (type == "duplicate") {
+        var dest2 = config.paths.dest + "/duplicates"
+        for (var key in map_result) {
+            resourseToMove(map_result[key], dest2);
+        }
+
+    }
 }
-dupliResourceMover().then(moveResource);
+constructTask();
