@@ -10,7 +10,9 @@
         "types": [
             "node"
         ],
-        "lib": ["es2015"],
+        "lib": [
+            "es2015"
+        ],
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
