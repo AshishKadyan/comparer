@@ -2,7 +2,6 @@ import { extname } from "path";
 import { promises } from "fs";
 import { resolve } from "url";
 import { rejects } from "assert";
-
 var compare = require('./compare')
 var fsMover = require('fs-extra');
 const createCSVFile = require('csv-file-creator');
@@ -23,7 +22,6 @@ function pathFinder(path: string): Promise<string[]> {
             .paths(path)
             .find();
         //  console.log(files)
-
         resolve(files)
     });
 }

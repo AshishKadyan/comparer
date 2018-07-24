@@ -12,6 +12,7 @@ var destination = config.paths.dest
 var map_files_copied = {};
 var map_updated_dest={};
 
+
 function clearDest(dest) {
     return new Promise((resolve, reject) => {
         rimraf(dest, function () {
