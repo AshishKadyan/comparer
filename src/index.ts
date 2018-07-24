@@ -12,7 +12,7 @@ var config = require('../config');
 var path = require('path')
 var rimraf = require('rimraf');
 var map_result = {};
-const path1 = config.paths.path1;
+const path1 = config.paths.dest;
 const path2 = config.paths.path2;
 var counter = 1
 var result = []
@@ -37,17 +37,19 @@ function clearDest(dest) {
 
 }
 function constructTask() {
-    // function purifier(array) {
-    //     var purifiedArray = array.filter(function (path) {
-    //         var paths_array = path.split("\\")
-    //         return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
-    //     })
-    //     return purifiedArray
-    // }
+    function purifier(array) { 
+        var purifiedArray = array.filter(function (path) {
+            var paths_array = path.split("\\")
+            return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
+        })
+        return purifiedArray
+    }
     return new Promise((resolve, reject) => {
         Promise.all([pathFinder(path1), pathFinder(path2)]).then(values => {
-            values[0].forEach((element, outer_index) => {
-                values[0].forEach((element2, inner_index) => {
+            var array1 = purifier(values[0])
+            var array2 = purifier(values[1])
+            array1.forEach((element, outer_index) => {
+                array1.forEach((element2, inner_index) => {
                     if (inner_index > outer_index) {
                         if (!check_map[element2])
                             comparer(element, element2) //compare files in folder asset2
@@ -55,21 +57,21 @@ function constructTask() {
 
                 })
             });
-            values[0].forEach((element, outer_index) => {
-                values[1].forEach(element2 => {
+            array1.forEach((element, outer_index) => {
+                array2.forEach(element2 => {
                     if (!check_map[element2]) {
 
                     }
-                    comparer(element, element2) // compare files of folder asset1 and asset2
+                   // comparer(element, element2) // compare files of folder asset1 and asset2
                 });
             });
-            values[1].forEach((element, outer_index) => {
-                values[1].forEach((element2, inner_index) => {
+            array2.forEach((element, outer_index) => {
+                array2.forEach((element2, inner_index) => {
                     if (inner_index > outer_index) {
                         if (!check_map[element2]) {
 
                         }
-                        comparer(element, element2) // compare files in folder asset1
+                //        comparer(element, element2) // compare files in folder asset1
 
                     }
 
