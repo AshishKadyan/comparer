@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var compare = require('./compare');
 var fsMover = require('fs-extra');
 var createCSVFile = require('csv-file-creator');
 var fs = require('fs');
 var filehound = require('filehound');
 var config = require('../config');
 var path = require('path');
+var rimraf = require('rimraf');
 var map_result = {};
-var path1 = config.paths.dest;
+var path1 = config.paths.path1;
 var path2 = config.paths.path2;
 var counter = 1;
 var result = [];
@@ -19,6 +21,14 @@ function pathFinder(path) {
             .find();
         //  console.log(files)
         resolve(files);
+    });
+}
+function clearDest(dest) {
+    return new Promise(function (resolve, reject) {
+        rimraf(dest, function () {
+            console.log('cleaned up ' + dest + ' directory');
+            resolve();
+        });
     });
 }
 function constructTask() {
@@ -43,7 +53,7 @@ function constructTask() {
                 values[1].forEach(function (element2) {
                     if (!check_map[element2]) {
                     }
-                    //comparer(element, element2) // compare files of folder asset1 and asset2
+                    comparer(element, element2); // compare files of folder asset1 and asset2
                 });
             });
             values[1].forEach(function (element, outer_index) {
@@ -51,14 +61,12 @@ function constructTask() {
                     if (inner_index > outer_index) {
                         if (!check_map[element2]) {
                         }
-                        // comparer(element, element2) // compare files in folder asset1
+                        comparer(element, element2); // compare files in folder asset1
                     }
                 });
             });
         }).then(function () {
-            moveResource("all");
-        }).then(function () {
-            prepareResult;
+            prepareResult();
         }).then(function () {
             moveResource("duplicate");
         });
@@ -74,15 +82,8 @@ function prepareResult() {
         });
         counter++;
     }
+    console.log(map_result);
     createCSVFile('result.csv', result);
-}
-function compareExtensionType(path1, path2, ext) {
-    console.log("comparing files " + path1 + " & " + path2 + " on binary");
-    var data1 = fs.readFileSync(path1);
-    var encoded1 = new Buffer(data1, 'binary').toString('base64');
-    var data2 = fs.readFileSync(path2);
-    var encoded2 = new Buffer(data2, 'binary').toString('base64');
-    return (encoded1 == encoded2);
 }
 function comparer(path1, path2) {
     var ext_check = function (path1, path2) {
@@ -95,7 +96,7 @@ function comparer(path1, path2) {
         var fileSizeInBytes1 = stats1.size;
         return (fileSizeInBytes == fileSizeInBytes1);
     };
-    if (ext_check(path1, path2) && size_check(path1, path2) && compareExtensionType(path1, path2, path.extname(path1))) {
+    if (ext_check(path1, path2) && compare.compareExtensionType(path1, path2, path.extname(path1))) {
         check_map[path2] = true;
         if (map_result[path1] == undefined) {
             map_result[path1] = [];
@@ -123,4 +124,6 @@ function moveResource(type) {
         }
     }
 }
-constructTask();
+clearDest(config.paths.dest + "/trash").then(function () {
+    constructTask();
+});

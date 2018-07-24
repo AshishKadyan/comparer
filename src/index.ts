@@ -2,14 +2,17 @@ import { extname } from "path";
 import { promises } from "fs";
 import { resolve } from "url";
 import { rejects } from "assert";
+
+var compare = require('./compare')
 var fsMover = require('fs-extra');
 const createCSVFile = require('csv-file-creator');
 const fs = require('fs');
 const filehound = require('filehound');
 var config = require('../config');
 var path = require('path')
+var rimraf = require('rimraf');
 var map_result = {};
-const path1 = config.paths.dest;
+const path1 = config.paths.path1;
 const path2 = config.paths.path2;
 var counter = 1
 var result = []
@@ -23,6 +26,15 @@ function pathFinder(path: string): Promise<string[]> {
 
         resolve(files)
     });
+}
+function clearDest(dest) {
+    return new Promise((resolve, reject) => {
+        rimraf(dest, function () {
+            console.log('cleaned up ' + dest + ' directory');
+            resolve();
+        });
+    })
+
 }
 function constructTask() {
     // function purifier(array) {
@@ -45,28 +57,26 @@ function constructTask() {
             });
             values[0].forEach((element, outer_index) => {
                 values[1].forEach(element2 => {
-                    if (!check_map[element2]){
+                    if (!check_map[element2]) {
 
                     }
-                        //comparer(element, element2) // compare files of folder asset1 and asset2
+                    comparer(element, element2) // compare files of folder asset1 and asset2
                 });
             });
             values[1].forEach((element, outer_index) => {
                 values[1].forEach((element2, inner_index) => {
                     if (inner_index > outer_index) {
-                        if (!check_map[element2]){
+                        if (!check_map[element2]) {
 
                         }
-                           // comparer(element, element2) // compare files in folder asset1
+                        comparer(element, element2) // compare files in folder asset1
 
                     }
 
                 })
             });
         }).then(function () {
-            moveResource("all")
-        }).then(function () {
-            prepareResult
+            prepareResult()
         }).then(function () {
             moveResource("duplicate")
         })
@@ -83,17 +93,9 @@ function prepareResult() {
         });
         counter++;
     }
-
+    console.log(map_result)
     createCSVFile('result.csv', result);
 
-}
-function compareExtensionType(path1: string, path2: string, ext: string) {
-    console.log("comparing files " + path1 + " & " + path2 + " on binary")
-    var data1 = fs.readFileSync(path1)
-    const encoded1 = new Buffer(data1, 'binary').toString('base64');
-    var data2 = fs.readFileSync(path2)
-    const encoded2 = new Buffer(data2, 'binary').toString('base64');
-    return (encoded1 == encoded2)
 }
 function comparer(path1: string, path2: string): void {
     var ext_check = function (path1, path2) {
@@ -106,7 +108,7 @@ function comparer(path1: string, path2: string): void {
         const fileSizeInBytes1 = stats1.size
         return (fileSizeInBytes == fileSizeInBytes1)
     }
-    if (ext_check(path1, path2) && size_check(path1, path2) && compareExtensionType(path1, path2, path.extname(path1))) {
+    if (ext_check(path1, path2) && compare.compareExtensionType(path1, path2, path.extname(path1))) {
         check_map[path2] = true
         if (map_result[path1] == undefined) {
             map_result[path1] = []
@@ -136,4 +138,6 @@ function moveResource(type: string) {
 
     }
 }
-constructTask();
+clearDest(config.paths.dest + "/trash").then(function () {
+    constructTask();
+});

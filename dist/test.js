@@ -1,14 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require('fs-extra');
 var fs1 = require('fs');
 var config = require('../config');
 var rimraf = require('rimraf');
-// rimraf(config.paths.dest, function () {
-//     console.log('cleaned up destination directory');
-// });
 var source1 = config.paths.path1;
 var source2 = config.paths.path2;
 var destination = config.paths.dest;
 var map_files_copied = {};
+function clearDest(dest) {
+    return new Promise(function (resolve, reject) {
+        rimraf(dest, function () {
+            console.log('cleaned up ' + dest + ' directory');
+            resolve();
+        });
+    });
+}
 function copyMap(source, dest) {
     fs1.readdir(source, function (err, files) {
         var dest_file = "";
@@ -57,5 +64,7 @@ function copy(source, destination) {
         console.log('Copy completed!');
     });
 }
-copyMap(source1, destination);
-copyMap(source2, destination);
+clearDest(config.paths.dest).then(function () {
+    copyMap(source1, destination);
+    copyMap(source2, destination);
+});

@@ -1,14 +1,25 @@
+import { resolve } from "path";
+import { rejects } from "assert";
+
 const fs = require('fs-extra')
 const fs1 = require('fs');
 var config = require('../config');
 var rimraf = require('rimraf');
-// rimraf(config.paths.dest, function () {
-//     console.log('cleaned up destination directory');
-// });
+
 var source1 = config.paths.path1
 var source2 = config.paths.path2
 var destination = config.paths.dest
 var map_files_copied = {};
+
+function clearDest(dest) {
+    return new Promise((resolve, reject) => {
+        rimraf(dest, function () {
+            console.log('cleaned up ' + dest + ' directory');
+            resolve();
+        });
+    })
+
+}
 
 function copyMap(source, dest) {
     fs1.readdir(source, (err, files) => {
@@ -17,10 +28,10 @@ function copyMap(source, dest) {
         var updated_destination = ""
         var updated_source = ""
         files.forEach(file => {
-           var file_lowercase=file.toLowerCase()
+            var file_lowercase = file.toLowerCase()
             if (file_lowercase.indexOf("asset") > -1) {
                 updated_source = source + ("/") + file
-              //  console.log(updated_source)
+                //  console.log(updated_source)
                 copyMap(updated_source, dest);
             } else {
                 if (file != "task.xml" && file != "practice.json") {
@@ -39,7 +50,7 @@ function copyMap(source, dest) {
 
                             updated_destination = dest + "/" + file1
                         } else {
-                            updated_destination = dest + "/" + file +"_"+ map_files_copied[file]
+                            updated_destination = dest + "/" + file + "_" + map_files_copied[file]
                         }
                     }
                     copy(updated_source, updated_destination)
@@ -60,5 +71,7 @@ function copy(source, destination) {
         console.log('Copy completed!')
     });
 }
-copyMap(source1, destination)
-copyMap(source2, destination)
+clearDest(config.paths.dest).then(function () {
+    copyMap(source1, destination)
+    copyMap(source2, destination)
+})
