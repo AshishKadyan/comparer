@@ -6,14 +6,21 @@ const fs1 = require('fs');
 var config = require('../config');
 var rimraf = require('rimraf');
 
-var source1 = config.paths.path1
-var source2 = config.paths.path2
-var destination = config.paths.dest
-var map_files_copied = {};
-var map_updated_dest = {};
-class structure {
-    constructor(){
 
+class structure {
+    public source1 = config.paths.path1
+    public source2 = config.paths.path2
+    public destination = config.paths.dest
+    public map_files_copied = {};
+    public map_updated_dest = {};
+    constructor() {
+        this.clearDest(config.paths.dest).then(async function () {
+
+            await this.copyMap(this.source1, this.destination)
+            await this.copyMap(this.source2, this.destination)
+        }).then(function () {
+            console.log(this.map_updated_dest)
+        })
 
 
 
@@ -85,13 +92,13 @@ class structure {
     }
 };
 
-module.exports=structure;
+module.exports = structure;
 
-let createStructure = new structure();
-createStructure.clearDest(config.paths.dest).then(async function () {
+// let createStructure = new structure();
+// createStructure.clearDest(config.paths.dest).then(async function () {
 
-    await createStructure.copyMap(source1, destination)
-    await createStructure.copyMap(source2, destination)
-}).then(function () {
-    console.log(map_updated_dest)
-})
+//     await createStructure.copyMap(source1, destination)
+//     await createStructure.copyMap(source2, destination)
+// }).then(function () {
+//     console.log(map_updated_dest)
+// })
