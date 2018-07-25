@@ -46,25 +46,31 @@ var structure = /** @class */ (function () {
         this.destination = config.paths.dest;
         this.map_files_copied = {};
         this.map_updated_dest = {};
+        this.counter1 = 0;
     }
     structure.prototype.driver = function () {
-        var self = this;
-        this.clearDest(config.paths.dest).then(function () {
-            return __awaiter(this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, self.copyMap(self.source1, self.destination)];
-                        case 1:
-                            _a.sent();
-                            return [4 /*yield*/, self.copyMap(self.source2, self.destination)];
-                        case 2:
-                            _a.sent();
-                            return [2 /*return*/];
-                    }
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var self = _this;
+            _this.clearDest(config.paths.dest).then(function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4 /*yield*/, self.copyMap(self.source1, self.destination)];
+                            case 1:
+                                _a.sent();
+                                return [4 /*yield*/, self.copyMap(self.source2, self.destination)];
+                            case 2:
+                                _a.sent();
+                                return [2 /*return*/];
+                        }
+                    });
                 });
+            }).then(function () {
+                console.log(self.map_updated_dest);
+                console.log("here");
+                resolve();
             });
-        }).then(function () {
-            console.log(this.map_updated_dest);
         });
     };
     structure.prototype.clearDest = function (dest) {

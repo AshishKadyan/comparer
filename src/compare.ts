@@ -3,7 +3,7 @@ const HtmlDiffer = require('html-differ').HtmlDiffer;
 const logger = require('html-differ/lib/logger');
 const equal = require("deep-equal");
 
-function isOfSameSize (path1, path2): boolean {
+function isOfSameSize(path1, path2): boolean {
     return fs.statSync(path1).size === fs.statSync(path2).size;
 }
 
@@ -49,7 +49,7 @@ function isEqualJson(path1, path2): boolean {
     return res;
 }
 
-export function compareExtensionType (path1: string, path2: string, ext: string): boolean {
+export function compareExtensionType(path1: string, path2: string, ext: string): boolean {
     switch (ext) {
         case ".htm":
             return isEqualHtml(path1, path2);

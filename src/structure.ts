@@ -1,6 +1,5 @@
 import { resolve } from "path";
 import { rejects } from "assert";
-
 const fs = require('fs-extra')
 const fs1 = require('fs');
 var config = require('../config');
@@ -14,19 +13,23 @@ export class structure {
     public destination = config.paths.dest
     public map_files_copied = {};
     public map_updated_dest = {};
+    public counter1=0;
     constructor() {
 
     }
     driver() {
-        let self = this
-        this.clearDest(config.paths.dest).then(async function () {
+        return new Promise((resolve, reject) => {
+            let self = this
+            this.clearDest(config.paths.dest).then(async function () {
 
-            await self.copyMap(self.source1, self.destination)
-            await self.copyMap(self.source2, self.destination)
-        }).then(function () {
-            console.log(this.map_updated_dest)
+                await self.copyMap(self.source1, self.destination)
+                await self.copyMap(self.source2, self.destination)
+            }).then(function () {
+                console.log(self.map_updated_dest)
+                console.log("here")
+                resolve();
+            })
         })
-
 
     }
 
@@ -43,7 +46,6 @@ export class structure {
     copyMap(source, dest) {
         fs1.readdir(source, (err, files) => {
             var dest_file = ""
-
             var updated_destination = ""
             var updated_source = ""
             files.forEach(file => {
@@ -79,8 +81,6 @@ export class structure {
 
                     }
                 }
-
-
             });
         })
 
