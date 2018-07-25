@@ -7,17 +7,19 @@ var config = require('../config');
 var rimraf = require('rimraf');
 
 
-class structure {
+export class structure {
+
     public source1 = config.paths.path1
     public source2 = config.paths.path2
     public destination = config.paths.dest
     public map_files_copied = {};
     public map_updated_dest = {};
     constructor() {
+        var self=this
         this.clearDest(config.paths.dest).then(async function () {
 
-            await this.copyMap(this.source1, this.destination)
-            await this.copyMap(this.source2, this.destination)
+            await self.copyMap(self.source1, self.destination)
+            await self.copyMap(self.source2, self.destination)
         }).then(function () {
             console.log(this.map_updated_dest)
         })
@@ -50,26 +52,26 @@ class structure {
                 } else {
                     if (file != "task.xml" && file != "practice.json") {
                         updated_source = source + "/" + file
-                        if (map_files_copied[file] == undefined) {
-                            map_files_copied[file] = 0;
+                        if (this.map_files_copied[file] == undefined) {
+                            this.map_files_copied[file] = 0;
                         } else {
-                            map_files_copied[file]++
+                            this.map_files_copied[file]++
                         }
 
-                        if (map_files_copied[file] == 0) {
+                        if (this.map_files_copied[file] == 0) {
                             updated_destination = dest + "/" + file
                         } else {
                             if (file.indexOf(".") > -1) {
-                                var file1 = file.replace(".", map_files_copied[file] + ".")
+                                var file1 = file.replace(".", this.map_files_copied[file] + ".")
 
                                 updated_destination = dest + "/" + file1
                             } else {
-                                updated_destination = dest + "/" + file + "_" + map_files_copied[file]
+                                updated_destination = dest + "/" + file + "_" + this.map_files_copied[file]
                             }
                         }
 
-                        map_updated_dest[updated_source] = updated_destination
-                        console.log(map_updated_dest)
+                        this.map_files_copied[updated_source] = updated_destination
+                        console.log(this.map_files_copied)
                         this.copy(updated_source, updated_destination)
 
                     }
@@ -92,7 +94,6 @@ class structure {
     }
 };
 
-module.exports = structure;
 
 // let createStructure = new structure();
 // createStructure.clearDest(config.paths.dest).then(async function () {

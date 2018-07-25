@@ -1,10 +1,14 @@
 var createStructure=require("./structure")
-
+console.log(createStructure)
 class AssetsConcatenator{
-    public createStructure;
+    public CreateStructure;
     
 constructor(){
-    createStructure=new createStructure.structure();
+    this.CreateStructure=new createStructure.structure();
+    this.
+
+
+
 }
 
 
