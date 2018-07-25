@@ -16,6 +16,9 @@ const path2 = config.paths.path2;
 var counter = 1
 var result = []
 var check_map = {};
+
+
+
 function pathFinder(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const files = filehound.create()
@@ -35,7 +38,7 @@ function clearDest(dest) {
 
 }
 function constructTask() {
-    function purifier(array) { 
+    function purifier(array) {
         var purifiedArray = array.filter(function (path) {
             var paths_array = path.split("\\")
             return !(paths_array[paths_array.length - 1] == "task.xml" || paths_array[paths_array.length - 1] == "practice.json")
@@ -55,32 +58,13 @@ function constructTask() {
 
                 })
             });
-            array1.forEach((element, outer_index) => {
-                array2.forEach(element2 => {
-                    if (!check_map[element2]) {
-
-                    }
-                   // comparer(element, element2) // compare files of folder asset1 and asset2
-                });
-            });
-            array2.forEach((element, outer_index) => {
-                array2.forEach((element2, inner_index) => {
-                    if (inner_index > outer_index) {
-                        if (!check_map[element2]) {
-
-                        }
-                //        comparer(element, element2) // compare files in folder asset1
-
-                    }
-
-                })
-            });
-        }).then(function () {
-            prepareResult()
-        }).then(function () {
-            moveResource("duplicate")
-        })
+        });
+    }).then(function () {
+        prepareResult()
+    }).then(function () {
+        moveResource("duplicate")
     })
+})
 
 }
 function prepareResult() {

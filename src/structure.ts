@@ -15,7 +15,10 @@ export class structure {
     public map_files_copied = {};
     public map_updated_dest = {};
     constructor() {
-        var self=this
+
+    }
+    driver() {
+        let self = this
         this.clearDest(config.paths.dest).then(async function () {
 
             await self.copyMap(self.source1, self.destination)
@@ -25,8 +28,8 @@ export class structure {
         })
 
 
-
     }
+
     clearDest(dest) {
         return new Promise((resolve, reject) => {
             rimraf(dest, function () {
@@ -93,13 +96,3 @@ export class structure {
         });
     }
 };
-
-
-// let createStructure = new structure();
-// createStructure.clearDest(config.paths.dest).then(async function () {
-
-//     await createStructure.copyMap(source1, destination)
-//     await createStructure.copyMap(source2, destination)
-// }).then(function () {
-//     console.log(map_updated_dest)
-// })

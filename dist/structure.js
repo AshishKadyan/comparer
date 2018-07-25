@@ -46,6 +46,8 @@ var structure = /** @class */ (function () {
         this.destination = config.paths.dest;
         this.map_files_copied = {};
         this.map_updated_dest = {};
+    }
+    structure.prototype.driver = function () {
         var self = this;
         this.clearDest(config.paths.dest).then(function () {
             return __awaiter(this, void 0, void 0, function () {
@@ -64,7 +66,7 @@ var structure = /** @class */ (function () {
         }).then(function () {
             console.log(this.map_updated_dest);
         });
-    }
+    };
     structure.prototype.clearDest = function (dest) {
         return new Promise(function (resolve, reject) {
             rimraf(dest, function () {
@@ -128,10 +130,3 @@ var structure = /** @class */ (function () {
 }());
 exports.structure = structure;
 ;
-// let createStructure = new structure();
-// createStructure.clearDest(config.paths.dest).then(async function () {
-//     await createStructure.copyMap(source1, destination)
-//     await createStructure.copyMap(source2, destination)
-// }).then(function () {
-//     console.log(map_updated_dest)
-// })

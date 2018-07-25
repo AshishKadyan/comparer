@@ -5,7 +5,7 @@ class AssetsConcatenator{
     
 constructor(){
     this.CreateStructure=new createStructure.structure();
-    this.
+    this.CreateStructure.driver();
 
 
 
@@ -14,4 +14,3 @@ constructor(){
 
 }
 let assetConcatenator=new AssetsConcatenator();
-console.log(assetConcatenator)
