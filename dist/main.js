@@ -1,7 +1,9 @@
 var createStructure = require("./structure");
+console.log(createStructure);
 var AssetsConcatenator = /** @class */ (function () {
     function AssetsConcatenator() {
-        createStructure = new createStructure.structure();
+        console.log(createStructure.structure);
+        this.CreateStructure = new createStructure.structure();
     }
     return AssetsConcatenator;
 }());

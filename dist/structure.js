@@ -39,13 +39,31 @@ var fs = require('fs-extra');
 var fs1 = require('fs');
 var config = require('../config');
 var rimraf = require('rimraf');
-var source1 = config.paths.path1;
-var source2 = config.paths.path2;
-var destination = config.paths.dest;
-var map_files_copied = {};
-var map_updated_dest = {};
 var structure = /** @class */ (function () {
     function structure() {
+        this.source1 = config.paths.path1;
+        this.source2 = config.paths.path2;
+        this.destination = config.paths.dest;
+        this.map_files_copied = {};
+        this.map_updated_dest = {};
+        var self = this;
+        this.clearDest(config.paths.dest).then(function () {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, self.copyMap(self.source1, self.destination)];
+                        case 1:
+                            _a.sent();
+                            return [4 /*yield*/, self.copyMap(self.source2, self.destination)];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        }).then(function () {
+            console.log(this.map_updated_dest);
+        });
     }
     structure.prototype.clearDest = function (dest) {
         return new Promise(function (resolve, reject) {
@@ -71,26 +89,26 @@ var structure = /** @class */ (function () {
                 else {
                     if (file != "task.xml" && file != "practice.json") {
                         updated_source = source + "/" + file;
-                        if (map_files_copied[file] == undefined) {
-                            map_files_copied[file] = 0;
+                        if (_this.map_files_copied[file] == undefined) {
+                            _this.map_files_copied[file] = 0;
                         }
                         else {
-                            map_files_copied[file]++;
+                            _this.map_files_copied[file]++;
                         }
-                        if (map_files_copied[file] == 0) {
+                        if (_this.map_files_copied[file] == 0) {
                             updated_destination = dest + "/" + file;
                         }
                         else {
                             if (file.indexOf(".") > -1) {
-                                var file1 = file.replace(".", map_files_copied[file] + ".");
+                                var file1 = file.replace(".", _this.map_files_copied[file] + ".");
                                 updated_destination = dest + "/" + file1;
                             }
                             else {
-                                updated_destination = dest + "/" + file + "_" + map_files_copied[file];
+                                updated_destination = dest + "/" + file + "_" + _this.map_files_copied[file];
                             }
                         }
-                        map_updated_dest[updated_source] = updated_destination;
-                        console.log(map_updated_dest);
+                        _this.map_files_copied[updated_source] = updated_destination;
+                        console.log(_this.map_files_copied);
                         _this.copy(updated_source, updated_destination);
                     }
                 }
@@ -108,23 +126,12 @@ var structure = /** @class */ (function () {
     };
     return structure;
 }());
+exports.structure = structure;
 ;
-module.exports = structure;
-var createStructure = new structure();
-createStructure.clearDest(config.paths.dest).then(function () {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createStructure.copyMap(source1, destination)];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, createStructure.copyMap(source2, destination)];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}).then(function () {
-    console.log(map_updated_dest);
-});
+// let createStructure = new structure();
+// createStructure.clearDest(config.paths.dest).then(async function () {
+//     await createStructure.copyMap(source1, destination)
+//     await createStructure.copyMap(source2, destination)
+// }).then(function () {
+//     console.log(map_updated_dest)
+// })

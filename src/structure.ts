@@ -7,17 +7,19 @@ var config = require('../config');
 var rimraf = require('rimraf');
 
 
-class structure {
+export class structure {
+
     public source1 = config.paths.path1
     public source2 = config.paths.path2
     public destination = config.paths.dest
     public map_files_copied = {};
     public map_updated_dest = {};
     constructor() {
+        var self=this
         this.clearDest(config.paths.dest).then(async function () {
 
-            await this.copyMap(this.source1, this.destination)
-            await this.copyMap(this.source2, this.destination)
+            await self.copyMap(self.source1, self.destination)
+            await self.copyMap(self.source2, self.destination)
         }).then(function () {
             console.log(this.map_updated_dest)
         })
@@ -92,7 +94,6 @@ class structure {
     }
 };
 
-module.exports = structure;
 
 // let createStructure = new structure();
 // createStructure.clearDest(config.paths.dest).then(async function () {
